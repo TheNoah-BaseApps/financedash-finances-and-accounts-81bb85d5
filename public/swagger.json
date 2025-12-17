@@ -595,6 +595,451 @@
         }
       }
     },
+    "/api/bill-of-lading/{id}": {
+      "get": {
+        "summary": "Get a bill of lading record by ID",
+        "description": "Retrieve a specific bill of lading record by its ID",
+        "tags": [
+          "Bill of Lading"
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Bill of lading record ID"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Bill of lading record details"
+          },
+          "404": {
+            "description": "Record not found"
+          },
+          "500": {
+            "description": "Server error"
+          }
+        }
+      },
+      "put": {
+        "summary": "Update a bill of lading record",
+        "description": "Update an existing bill of lading record by its ID",
+        "tags": [
+          "Bill of Lading"
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Bill of lading record ID"
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Record updated successfully"
+          },
+          "404": {
+            "description": "Record not found"
+          },
+          "500": {
+            "description": "Server error"
+          }
+        }
+      },
+      "delete": {
+        "summary": "Delete a bill of lading record",
+        "description": "Delete a bill of lading record by its ID",
+        "tags": [
+          "Bill of Lading"
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Bill of lading record ID"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Record deleted successfully"
+          },
+          "404": {
+            "description": "Record not found"
+          },
+          "500": {
+            "description": "Server error"
+          }
+        }
+      }
+    },
+    "/api/bill-of-lading": {
+      "get": {
+        "summary": "Get all bill of lading records",
+        "description": "Retrieve a list of all bill of lading records with pagination support",
+        "tags": [
+          "Bill of Lading"
+        ],
+        "parameters": [
+          {
+            "in": "query",
+            "name": "limit",
+            "schema": {
+              "type": "integer",
+              "default": 50
+            },
+            "description": "Maximum number of records to return"
+          },
+          {
+            "in": "query",
+            "name": "offset",
+            "schema": {
+              "type": "integer",
+              "default": 0
+            },
+            "description": "Number of records to skip"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "List of bill of lading records",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean"
+                    },
+                    "data": {
+                      "type": "array",
+                      "items": {
+                        "type": "object"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Server error"
+          }
+        }
+      },
+      "post": {
+        "summary": "Create a new bill of lading record",
+        "description": "Create a new bill of lading record with shipping and packaging details",
+        "tags": [
+          "Bill of Lading"
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "number_shipping_units",
+                  "packaging_description",
+                  "code",
+                  "weight_subject_to_correction",
+                  "dimensional_weight",
+                  "amount"
+                ],
+                "properties": {
+                  "number_shipping_units": {
+                    "type": "integer"
+                  },
+                  "packaging_description": {
+                    "type": "string"
+                  },
+                  "code": {
+                    "type": "string"
+                  },
+                  "weight_subject_to_correction": {
+                    "type": "number"
+                  },
+                  "dimensional_weight": {
+                    "type": "number"
+                  },
+                  "amount": {
+                    "type": "number"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Bill of lading record created successfully"
+          },
+          "400": {
+            "description": "Invalid input data"
+          },
+          "500": {
+            "description": "Server error"
+          }
+        }
+      }
+    },
+    "/api/bill-to-invoice/{id}": {
+      "get": {
+        "summary": "Get a bill to invoice record by ID",
+        "description": "Retrieve a specific bill to invoice record by its ID",
+        "tags": [
+          "Bill to Invoice"
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Bill to invoice record ID"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Bill to invoice record details"
+          },
+          "404": {
+            "description": "Record not found"
+          },
+          "500": {
+            "description": "Server error"
+          }
+        }
+      },
+      "put": {
+        "summary": "Update a bill to invoice record",
+        "description": "Update an existing bill to invoice record by its ID",
+        "tags": [
+          "Bill to Invoice"
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Bill to invoice record ID"
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Record updated successfully"
+          },
+          "404": {
+            "description": "Record not found"
+          },
+          "500": {
+            "description": "Server error"
+          }
+        }
+      },
+      "delete": {
+        "summary": "Delete a bill to invoice record",
+        "description": "Delete a bill to invoice record by its ID",
+        "tags": [
+          "Bill to Invoice"
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Bill to invoice record ID"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Record deleted successfully"
+          },
+          "404": {
+            "description": "Record not found"
+          },
+          "500": {
+            "description": "Server error"
+          }
+        }
+      }
+    },
+    "/api/bill-to-invoice": {
+      "get": {
+        "summary": "Get all bill to invoice records",
+        "description": "Retrieve a list of all bill to invoice records with pagination support",
+        "tags": [
+          "Bill to Invoice"
+        ],
+        "parameters": [
+          {
+            "in": "query",
+            "name": "limit",
+            "schema": {
+              "type": "integer",
+              "default": 50
+            },
+            "description": "Maximum number of records to return"
+          },
+          {
+            "in": "query",
+            "name": "offset",
+            "schema": {
+              "type": "integer",
+              "default": 0
+            },
+            "description": "Number of records to skip"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "List of bill to invoice records",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean"
+                    },
+                    "data": {
+                      "type": "array",
+                      "items": {
+                        "type": "object"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Server error"
+          }
+        }
+      },
+      "post": {
+        "summary": "Create a new bill to invoice record",
+        "description": "Create a new bill to invoice record with invoice details",
+        "tags": [
+          "Bill to Invoice"
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "invoice_id",
+                  "date",
+                  "customer_id",
+                  "terms",
+                  "bill_to",
+                  "ship_to",
+                  "description",
+                  "quantity",
+                  "unit_price",
+                  "amount",
+                  "tax_percentage",
+                  "total"
+                ],
+                "properties": {
+                  "invoice_id": {
+                    "type": "string"
+                  },
+                  "date": {
+                    "type": "string",
+                    "format": "date-time"
+                  },
+                  "customer_id": {
+                    "type": "string"
+                  },
+                  "terms": {
+                    "type": "string"
+                  },
+                  "bill_to": {
+                    "type": "string"
+                  },
+                  "ship_to": {
+                    "type": "string"
+                  },
+                  "description": {
+                    "type": "string"
+                  },
+                  "quantity": {
+                    "type": "integer"
+                  },
+                  "unit_price": {
+                    "type": "number"
+                  },
+                  "amount": {
+                    "type": "number"
+                  },
+                  "tax_percentage": {
+                    "type": "number"
+                  },
+                  "total": {
+                    "type": "number"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Bill to invoice record created successfully"
+          },
+          "400": {
+            "description": "Invalid input data"
+          },
+          "500": {
+            "description": "Server error"
+          }
+        }
+      }
+    },
     "/api/budget-management/{id}": {
       "get": {
         "summary": "Get a specific budget entry",

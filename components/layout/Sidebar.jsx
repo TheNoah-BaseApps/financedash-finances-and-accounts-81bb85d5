@@ -10,13 +10,16 @@ import {
   AlertTriangle,
   Lightbulb,
   BookOpen,
-  Wallet
+  Wallet,
+  Package
 } from 'lucide-react';
 
 const navItems = [
   { name: 'Dashboard', href: '/dashboard', icon: LayoutDashboard },
   { name: 'Accounts Payable', href: '/accounts-payable', icon: FileText },
   { name: 'Accounts Receivable', href: '/accounts-receivable', icon: DollarSign },
+  { name: 'Bill to Invoice', href: '/bill-to-invoice', icon: FileText },
+  { name: 'Bill of Lading', href: '/bill-of-lading', icon: Package },
   { name: 'Accounting Journal', href: '/accounting-journal', icon: BookOpen },
   { name: 'Budget Management', href: '/budget-management', icon: Wallet },
   { name: 'Cash Flow Forecast', href: '/cash-flow-forecast', icon: TrendingUp },
