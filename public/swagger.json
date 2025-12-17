@@ -30,6 +30,277 @@
   },
   "security": [],
   "paths": {
+    "/api/accounting-journal/{id}": {
+      "get": {
+        "summary": "Get a specific accounting journal entry",
+        "description": "Retrieve details of a single accounting journal entry by ID",
+        "tags": [
+          "Accounting Journal"
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Journal entry ID"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Journal entry details"
+          },
+          "404": {
+            "description": "Entry not found"
+          },
+          "500": {
+            "description": "Server error"
+          }
+        }
+      },
+      "put": {
+        "summary": "Update an accounting journal entry",
+        "description": "Update an existing journal entry",
+        "tags": [
+          "Accounting Journal"
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "account_code": {
+                    "type": "string"
+                  },
+                  "account_name": {
+                    "type": "string"
+                  },
+                  "trial_balance_debit": {
+                    "type": "number"
+                  },
+                  "trial_balance_credit": {
+                    "type": "number"
+                  },
+                  "adjusting_entries_debit": {
+                    "type": "number"
+                  },
+                  "adjusting_entries_credit": {
+                    "type": "number"
+                  },
+                  "adjusted_trial_balance_debit": {
+                    "type": "number"
+                  },
+                  "adjusted_trial_balance_credit": {
+                    "type": "number"
+                  },
+                  "income_statement_debit": {
+                    "type": "number"
+                  },
+                  "income_statement_credit": {
+                    "type": "number"
+                  },
+                  "balance_sheet_debit": {
+                    "type": "number"
+                  },
+                  "balance_sheet_credit": {
+                    "type": "number"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Entry updated successfully"
+          },
+          "404": {
+            "description": "Entry not found"
+          },
+          "500": {
+            "description": "Server error"
+          }
+        }
+      },
+      "delete": {
+        "summary": "Delete an accounting journal entry",
+        "description": "Remove a journal entry from the system",
+        "tags": [
+          "Accounting Journal"
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Entry deleted successfully"
+          },
+          "404": {
+            "description": "Entry not found"
+          },
+          "500": {
+            "description": "Server error"
+          }
+        }
+      }
+    },
+    "/api/accounting-journal": {
+      "get": {
+        "summary": "Get all accounting journal entries",
+        "description": "Retrieve a list of all accounting journal entries with pagination and filtering",
+        "tags": [
+          "Accounting Journal"
+        ],
+        "parameters": [
+          {
+            "in": "query",
+            "name": "limit",
+            "schema": {
+              "type": "integer",
+              "default": 50
+            },
+            "description": "Maximum number of entries to return"
+          },
+          {
+            "in": "query",
+            "name": "offset",
+            "schema": {
+              "type": "integer",
+              "default": 0
+            },
+            "description": "Number of entries to skip"
+          },
+          {
+            "in": "query",
+            "name": "account_code",
+            "schema": {
+              "type": "string"
+            },
+            "description": "Filter by account code"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "List of accounting journal entries",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean"
+                    },
+                    "data": {
+                      "type": "array",
+                      "items": {
+                        "type": "object"
+                      }
+                    },
+                    "total": {
+                      "type": "integer"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Server error"
+          }
+        }
+      },
+      "post": {
+        "summary": "Create a new accounting journal entry",
+        "description": "Add a new entry to the accounting journal",
+        "tags": [
+          "Accounting Journal"
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "account_code",
+                  "account_name"
+                ],
+                "properties": {
+                  "account_code": {
+                    "type": "string"
+                  },
+                  "account_name": {
+                    "type": "string"
+                  },
+                  "trial_balance_debit": {
+                    "type": "number"
+                  },
+                  "trial_balance_credit": {
+                    "type": "number"
+                  },
+                  "adjusting_entries_debit": {
+                    "type": "number"
+                  },
+                  "adjusting_entries_credit": {
+                    "type": "number"
+                  },
+                  "adjusted_trial_balance_debit": {
+                    "type": "number"
+                  },
+                  "adjusted_trial_balance_credit": {
+                    "type": "number"
+                  },
+                  "income_statement_debit": {
+                    "type": "number"
+                  },
+                  "income_statement_credit": {
+                    "type": "number"
+                  },
+                  "balance_sheet_debit": {
+                    "type": "number"
+                  },
+                  "balance_sheet_credit": {
+                    "type": "number"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Journal entry created successfully"
+          },
+          "400": {
+            "description": "Invalid input"
+          },
+          "500": {
+            "description": "Server error"
+          }
+        }
+      }
+    },
     "/api/accounts-payable/{id}": {
       "put": {
         "summary": "Update payable",

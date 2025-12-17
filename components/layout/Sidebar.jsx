@@ -8,13 +8,15 @@ import {
   DollarSign, 
   TrendingUp, 
   AlertTriangle,
-  Lightbulb
+  Lightbulb,
+  BookOpen
 } from 'lucide-react';
 
 const navItems = [
   { name: 'Dashboard', href: '/dashboard', icon: LayoutDashboard },
   { name: 'Accounts Payable', href: '/accounts-payable', icon: FileText },
   { name: 'Accounts Receivable', href: '/accounts-receivable', icon: DollarSign },
+  { name: 'Accounting Journal', href: '/accounting-journal', icon: BookOpen },
   { name: 'Cash Flow Forecast', href: '/cash-flow-forecast', icon: TrendingUp },
   { name: 'Risk Summary', href: '/risk-summary', icon: AlertTriangle },
   { name: 'Insights', href: '/insights', icon: Lightbulb }
