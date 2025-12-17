@@ -595,105 +595,6 @@
         }
       }
     },
-    "/api/balance-sheet/{id}": {
-      "get": {
-        "summary": "Get a balance sheet entry by ID",
-        "description": "Retrieve a specific balance sheet entry",
-        "tags": [
-          "Balance Sheet"
-        ],
-        "parameters": [
-          {
-            "in": "path",
-            "name": "id",
-            "required": true,
-            "schema": {
-              "type": "string"
-            },
-            "description": "Balance sheet entry ID"
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Balance sheet entry details"
-          },
-          "404": {
-            "description": "Balance sheet entry not found"
-          },
-          "500": {
-            "description": "Server error"
-          }
-        }
-      },
-      "put": {
-        "summary": "Update a balance sheet entry",
-        "description": "Update an existing balance sheet entry",
-        "tags": [
-          "Balance Sheet"
-        ],
-        "parameters": [
-          {
-            "in": "path",
-            "name": "id",
-            "required": true,
-            "schema": {
-              "type": "string"
-            },
-            "description": "Balance sheet entry ID"
-          }
-        ],
-        "requestBody": {
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "object"
-              }
-            }
-          }
-        },
-        "responses": {
-          "200": {
-            "description": "Balance sheet entry updated successfully"
-          },
-          "404": {
-            "description": "Balance sheet entry not found"
-          },
-          "500": {
-            "description": "Server error"
-          }
-        }
-      },
-      "delete": {
-        "summary": "Delete a balance sheet entry",
-        "description": "Delete a specific balance sheet entry",
-        "tags": [
-          "Balance Sheet"
-        ],
-        "parameters": [
-          {
-            "in": "path",
-            "name": "id",
-            "required": true,
-            "schema": {
-              "type": "string"
-            },
-            "description": "Balance sheet entry ID"
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Balance sheet entry deleted successfully"
-          },
-          "404": {
-            "description": "Balance sheet entry not found"
-          },
-          "500": {
-            "description": "Server error"
-          }
-        }
-      }
-    },
     "/api/balance-sheet": {
       "get": {
         "summary": "Get all balance sheet entries",
@@ -1716,6 +1617,234 @@
         }
       }
     },
+    "/api/cash-flow-statement/{id}": {
+      "get": {
+        "summary": "Get cash flow statement by ID",
+        "description": "Retrieve a specific cash flow statement record",
+        "tags": [
+          "Cash Flow Statement"
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successfully retrieved cash flow statement"
+          },
+          "404": {
+            "description": "Cash flow statement not found"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        }
+      },
+      "put": {
+        "summary": "Update cash flow statement",
+        "description": "Update an existing cash flow statement record",
+        "tags": [
+          "Cash Flow Statement"
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successfully updated"
+          },
+          "404": {
+            "description": "Cash flow statement not found"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        }
+      },
+      "delete": {
+        "summary": "Delete cash flow statement",
+        "description": "Delete a cash flow statement record",
+        "tags": [
+          "Cash Flow Statement"
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successfully deleted"
+          },
+          "404": {
+            "description": "Cash flow statement not found"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        }
+      }
+    },
+    "/api/cash-flow-statement": {
+      "get": {
+        "summary": "Get all cash flow statements",
+        "description": "Retrieve all cash flow statement records with pagination",
+        "tags": [
+          "Cash Flow Statement"
+        ],
+        "parameters": [
+          {
+            "in": "query",
+            "name": "limit",
+            "schema": {
+              "type": "integer",
+              "default": 100
+            },
+            "description": "Maximum number of records to return"
+          },
+          {
+            "in": "query",
+            "name": "offset",
+            "schema": {
+              "type": "integer",
+              "default": 0
+            },
+            "description": "Number of records to skip"
+          },
+          {
+            "in": "query",
+            "name": "category",
+            "schema": {
+              "type": "string"
+            },
+            "description": "Filter by category"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successfully retrieved cash flow statements"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        }
+      },
+      "post": {
+        "summary": "Create a new cash flow statement",
+        "description": "Create a new cash flow statement record",
+        "tags": [
+          "Cash Flow Statement"
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "category"
+                ],
+                "properties": {
+                  "category": {
+                    "type": "string"
+                  },
+                  "net_income": {
+                    "type": "number"
+                  },
+                  "changes_in_working_capital": {
+                    "type": "number"
+                  },
+                  "depreciation_and_amortization": {
+                    "type": "number"
+                  },
+                  "accounts_receivable": {
+                    "type": "number"
+                  },
+                  "accounts_payable": {
+                    "type": "number"
+                  },
+                  "deferred_taxes": {
+                    "type": "number"
+                  },
+                  "other": {
+                    "type": "number"
+                  },
+                  "cash_from_sale_of_capital_assets": {
+                    "type": "number"
+                  },
+                  "cash_paid_for_purchase_of_capital_assets": {
+                    "type": "number"
+                  },
+                  "increases_in_long_term_assets": {
+                    "type": "number"
+                  },
+                  "proceeds_from_common_stock_issuance": {
+                    "type": "number"
+                  },
+                  "proceeds_from_long_term_debt_issuance": {
+                    "type": "number"
+                  },
+                  "dividends_paid_out": {
+                    "type": "number"
+                  },
+                  "proceeds_from_preferred_stock_issuance": {
+                    "type": "number"
+                  },
+                  "net_change_in_cash_and_cash_equivalents": {
+                    "type": "number"
+                  },
+                  "cash_at_beginning_of_period": {
+                    "type": "number"
+                  },
+                  "cash_at_end_of_period": {
+                    "type": "number"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Cash flow statement created successfully"
+          },
+          "400": {
+            "description": "Bad request - validation error"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        }
+      }
+    },
     "/api/dashboard/insights": {
       "get": {
         "summary": "Get actionable insights",
@@ -1848,6 +1977,556 @@
           },
           "400": {
             "description": "Invalid request data"
+          }
+        }
+      }
+    },
+    "/api/expense-report/{id}": {
+      "get": {
+        "summary": "Get expense report by ID",
+        "description": "Retrieve a specific expense report record",
+        "tags": [
+          "Expense Report"
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successfully retrieved expense report"
+          },
+          "404": {
+            "description": "Expense report not found"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        }
+      },
+      "put": {
+        "summary": "Update expense report",
+        "description": "Update an existing expense report record",
+        "tags": [
+          "Expense Report"
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successfully updated"
+          },
+          "404": {
+            "description": "Expense report not found"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        }
+      },
+      "delete": {
+        "summary": "Delete expense report",
+        "description": "Delete an expense report record",
+        "tags": [
+          "Expense Report"
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successfully deleted"
+          },
+          "404": {
+            "description": "Expense report not found"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        }
+      }
+    },
+    "/api/expense-report": {
+      "get": {
+        "summary": "Get all expense reports",
+        "description": "Retrieve all expense report records with pagination",
+        "tags": [
+          "Expense Report"
+        ],
+        "parameters": [
+          {
+            "in": "query",
+            "name": "limit",
+            "schema": {
+              "type": "integer",
+              "default": 100
+            },
+            "description": "Maximum number of records to return"
+          },
+          {
+            "in": "query",
+            "name": "offset",
+            "schema": {
+              "type": "integer",
+              "default": 0
+            },
+            "description": "Number of records to skip"
+          },
+          {
+            "in": "query",
+            "name": "employee_id",
+            "schema": {
+              "type": "string"
+            },
+            "description": "Filter by employee ID"
+          },
+          {
+            "in": "query",
+            "name": "department",
+            "schema": {
+              "type": "string"
+            },
+            "description": "Filter by department"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successfully retrieved expense reports"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        }
+      },
+      "post": {
+        "summary": "Create a new expense report",
+        "description": "Create a new expense report record",
+        "tags": [
+          "Expense Report"
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "employee_name",
+                  "employee_id",
+                  "reimbursement_address",
+                  "phone",
+                  "department",
+                  "manager",
+                  "manager_phone",
+                  "destination",
+                  "purpose",
+                  "from_date",
+                  "to_date",
+                  "expense_date",
+                  "description"
+                ],
+                "properties": {
+                  "employee_name": {
+                    "type": "string"
+                  },
+                  "employee_id": {
+                    "type": "string"
+                  },
+                  "reimbursement_address": {
+                    "type": "string"
+                  },
+                  "phone": {
+                    "type": "string"
+                  },
+                  "department": {
+                    "type": "string"
+                  },
+                  "manager": {
+                    "type": "string"
+                  },
+                  "manager_phone": {
+                    "type": "string"
+                  },
+                  "destination": {
+                    "type": "string"
+                  },
+                  "purpose": {
+                    "type": "string"
+                  },
+                  "from_date": {
+                    "type": "string",
+                    "format": "date-time"
+                  },
+                  "to_date": {
+                    "type": "string",
+                    "format": "date-time"
+                  },
+                  "expense_date": {
+                    "type": "string",
+                    "format": "date-time"
+                  },
+                  "description": {
+                    "type": "string"
+                  },
+                  "air_and_transport": {
+                    "type": "number"
+                  },
+                  "lodging": {
+                    "type": "number"
+                  },
+                  "fuel": {
+                    "type": "number"
+                  },
+                  "phone_expenses": {
+                    "type": "number"
+                  },
+                  "meals_and_tips": {
+                    "type": "number"
+                  },
+                  "entertainment": {
+                    "type": "number"
+                  },
+                  "other_expenses": {
+                    "type": "number"
+                  },
+                  "total": {
+                    "type": "number"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Expense report created successfully"
+          },
+          "400": {
+            "description": "Bad request - validation error"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        }
+      }
+    },
+    "/api/income-statement/{id}": {
+      "get": {
+        "summary": "Get income statement by ID",
+        "description": "Retrieve a specific income statement record",
+        "tags": [
+          "Income Statement"
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Income statement ID"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successfully retrieved income statement"
+          },
+          "404": {
+            "description": "Income statement not found"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        }
+      },
+      "put": {
+        "summary": "Update income statement",
+        "description": "Update an existing income statement record",
+        "tags": [
+          "Income Statement"
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successfully updated"
+          },
+          "404": {
+            "description": "Income statement not found"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        }
+      },
+      "delete": {
+        "summary": "Delete income statement",
+        "description": "Delete an income statement record",
+        "tags": [
+          "Income Statement"
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successfully deleted"
+          },
+          "404": {
+            "description": "Income statement not found"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        }
+      }
+    },
+    "/api/income-statement": {
+      "get": {
+        "summary": "Get all income statements",
+        "description": "Retrieve all income statement records with pagination",
+        "tags": [
+          "Income Statement"
+        ],
+        "parameters": [
+          {
+            "in": "query",
+            "name": "limit",
+            "schema": {
+              "type": "integer",
+              "default": 100
+            },
+            "description": "Maximum number of records to return"
+          },
+          {
+            "in": "query",
+            "name": "offset",
+            "schema": {
+              "type": "integer",
+              "default": 0
+            },
+            "description": "Number of records to skip"
+          },
+          {
+            "in": "query",
+            "name": "year",
+            "schema": {
+              "type": "string"
+            },
+            "description": "Filter by year"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successfully retrieved income statements",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean"
+                    },
+                    "data": {
+                      "type": "array",
+                      "items": {
+                        "type": "object"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        }
+      },
+      "post": {
+        "summary": "Create a new income statement",
+        "description": "Create a new income statement record",
+        "tags": [
+          "Income Statement"
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "year",
+                  "account_category"
+                ],
+                "properties": {
+                  "year": {
+                    "type": "string"
+                  },
+                  "account_category": {
+                    "type": "string"
+                  },
+                  "sales_revenue": {
+                    "type": "number"
+                  },
+                  "service_revenue": {
+                    "type": "number"
+                  },
+                  "interest_revenue": {
+                    "type": "number"
+                  },
+                  "other_revenue": {
+                    "type": "number"
+                  },
+                  "total_revenues": {
+                    "type": "number"
+                  },
+                  "advertising": {
+                    "type": "number"
+                  },
+                  "bad_debt": {
+                    "type": "number"
+                  },
+                  "commissions": {
+                    "type": "number"
+                  },
+                  "cost_of_goods_sold": {
+                    "type": "number"
+                  },
+                  "depreciation": {
+                    "type": "number"
+                  },
+                  "employee_benefits": {
+                    "type": "number"
+                  },
+                  "furniture_and_equipment": {
+                    "type": "number"
+                  },
+                  "insurance": {
+                    "type": "number"
+                  },
+                  "interest_expense": {
+                    "type": "number"
+                  },
+                  "maintenance_and_repairs": {
+                    "type": "number"
+                  },
+                  "office_supplies": {
+                    "type": "number"
+                  },
+                  "payroll_taxes": {
+                    "type": "number"
+                  },
+                  "rent": {
+                    "type": "number"
+                  },
+                  "research_and_development": {
+                    "type": "number"
+                  },
+                  "salaries_and_wages": {
+                    "type": "number"
+                  },
+                  "software": {
+                    "type": "number"
+                  },
+                  "travel": {
+                    "type": "number"
+                  },
+                  "utilities": {
+                    "type": "number"
+                  },
+                  "web_hosting_and_domains": {
+                    "type": "number"
+                  },
+                  "other_expenses": {
+                    "type": "number"
+                  },
+                  "total_expenses": {
+                    "type": "number"
+                  },
+                  "net_income_before_taxes": {
+                    "type": "number"
+                  },
+                  "income_tax_expense": {
+                    "type": "number"
+                  },
+                  "income_from_continuing_operations": {
+                    "type": "number"
+                  },
+                  "net_income": {
+                    "type": "number"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Income statement created successfully"
+          },
+          "400": {
+            "description": "Bad request - validation error"
+          },
+          "500": {
+            "description": "Internal server error"
           }
         }
       }

@@ -12,7 +12,8 @@ import {
   BookOpen,
   Wallet,
   Package,
-  FileSpreadsheet
+  FileSpreadsheet,
+  Receipt
 } from 'lucide-react';
 
 const navItems = [
@@ -23,6 +24,9 @@ const navItems = [
   { name: 'Bill of Lading', href: '/bill-of-lading', icon: Package },
   { name: 'Accounting Journal', href: '/accounting-journal', icon: BookOpen },
   { name: 'Balance Sheet', href: '/balance-sheet', icon: FileSpreadsheet },
+  { name: 'Income Statement', href: '/income-statement', icon: FileText },
+  { name: 'Cash Flow Statement', href: '/cash-flow-statement', icon: TrendingUp },
+  { name: 'Expense Report', href: '/expense-report', icon: Receipt },
   { name: 'Budget Management', href: '/budget-management', icon: Wallet },
   { name: 'Cash Flow Forecast', href: '/cash-flow-forecast', icon: TrendingUp },
   { name: 'Risk Summary', href: '/risk-summary', icon: AlertTriangle },
