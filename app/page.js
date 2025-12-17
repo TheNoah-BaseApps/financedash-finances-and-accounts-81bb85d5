@@ -4,7 +4,7 @@ import { useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { FileText, TrendingUp, Receipt, Calculator, DollarSign, Users, Building, Package, ShoppingCart } from 'lucide-react';
+import { FileText, TrendingUp, Receipt, Calculator, DollarSign, Users, Building, Package, ShoppingCart, Wallet } from 'lucide-react';
 
 export default function HomePage() {
   const router = useRouter();
@@ -74,6 +74,24 @@ export default function HomePage() {
       title: 'Expense Report',
       description: 'Manage employee expense reimbursements and travel costs',
       link: '/expense-report'
+    },
+    {
+      icon: ShoppingCart,
+      title: 'Purchase Orders',
+      description: 'Manage vendor purchase orders and procurement tracking',
+      link: '/purchase-orders'
+    },
+    {
+      icon: TrendingUp,
+      title: 'Finance Reporting',
+      description: 'Track financial performance metrics and quarterly reports',
+      link: '/finance-reporting'
+    },
+    {
+      icon: Wallet,
+      title: 'Working Capital',
+      description: 'Monitor cash conversion cycle and working capital efficiency',
+      link: '/working-capital'
     }
   ];
 

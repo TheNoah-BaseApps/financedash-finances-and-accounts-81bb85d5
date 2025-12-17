@@ -13,7 +13,8 @@ import {
   Wallet,
   Package,
   FileSpreadsheet,
-  Receipt
+  Receipt,
+  ShoppingCart
 } from 'lucide-react';
 
 const navItems = [
@@ -22,6 +23,7 @@ const navItems = [
   { name: 'Accounts Receivable', href: '/accounts-receivable', icon: DollarSign },
   { name: 'Bill to Invoice', href: '/bill-to-invoice', icon: FileText },
   { name: 'Bill of Lading', href: '/bill-of-lading', icon: Package },
+  { name: 'Purchase Orders', href: '/purchase-orders', icon: ShoppingCart },
   { name: 'Accounting Journal', href: '/accounting-journal', icon: BookOpen },
   { name: 'Balance Sheet', href: '/balance-sheet', icon: FileSpreadsheet },
   { name: 'Income Statement', href: '/income-statement', icon: FileText },
@@ -29,6 +31,8 @@ const navItems = [
   { name: 'Expense Report', href: '/expense-report', icon: Receipt },
   { name: 'Budget Management', href: '/budget-management', icon: Wallet },
   { name: 'Cash Flow Forecast', href: '/cash-flow-forecast', icon: TrendingUp },
+  { name: 'Finance Reporting', href: '/finance-reporting', icon: TrendingUp },
+  { name: 'Working Capital', href: '/working-capital', icon: Wallet },
   { name: 'Risk Summary', href: '/risk-summary', icon: AlertTriangle },
   { name: 'Insights', href: '/insights', icon: Lightbulb }
 ];
