@@ -595,6 +595,300 @@
         }
       }
     },
+    "/api/balance-sheet/{id}": {
+      "get": {
+        "summary": "Get a balance sheet entry by ID",
+        "description": "Retrieve a specific balance sheet entry",
+        "tags": [
+          "Balance Sheet"
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Balance sheet entry ID"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Balance sheet entry details"
+          },
+          "404": {
+            "description": "Balance sheet entry not found"
+          },
+          "500": {
+            "description": "Server error"
+          }
+        }
+      },
+      "put": {
+        "summary": "Update a balance sheet entry",
+        "description": "Update an existing balance sheet entry",
+        "tags": [
+          "Balance Sheet"
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Balance sheet entry ID"
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Balance sheet entry updated successfully"
+          },
+          "404": {
+            "description": "Balance sheet entry not found"
+          },
+          "500": {
+            "description": "Server error"
+          }
+        }
+      },
+      "delete": {
+        "summary": "Delete a balance sheet entry",
+        "description": "Delete a specific balance sheet entry",
+        "tags": [
+          "Balance Sheet"
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Balance sheet entry ID"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Balance sheet entry deleted successfully"
+          },
+          "404": {
+            "description": "Balance sheet entry not found"
+          },
+          "500": {
+            "description": "Server error"
+          }
+        }
+      }
+    },
+    "/api/balance-sheet": {
+      "get": {
+        "summary": "Get all balance sheet entries",
+        "description": "Retrieve all balance sheet entries with pagination support",
+        "tags": [
+          "Balance Sheet"
+        ],
+        "parameters": [
+          {
+            "in": "query",
+            "name": "limit",
+            "schema": {
+              "type": "integer",
+              "default": 100
+            },
+            "description": "Maximum number of records to return"
+          },
+          {
+            "in": "query",
+            "name": "offset",
+            "schema": {
+              "type": "integer",
+              "default": 0
+            },
+            "description": "Number of records to skip"
+          },
+          {
+            "in": "query",
+            "name": "year",
+            "schema": {
+              "type": "string"
+            },
+            "description": "Filter by year"
+          },
+          {
+            "in": "query",
+            "name": "category",
+            "schema": {
+              "type": "string"
+            },
+            "description": "Filter by category"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "List of balance sheet entries",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean"
+                    },
+                    "data": {
+                      "type": "array",
+                      "items": {
+                        "type": "object"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Server error"
+          }
+        }
+      },
+      "post": {
+        "summary": "Create a new balance sheet entry",
+        "description": "Create a new balance sheet entry with assets, liabilities, and equity data",
+        "tags": [
+          "Balance Sheet"
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "year",
+                  "category"
+                ],
+                "properties": {
+                  "year": {
+                    "type": "string"
+                  },
+                  "category": {
+                    "type": "string"
+                  },
+                  "cash": {
+                    "type": "number"
+                  },
+                  "accounts_receivable": {
+                    "type": "number"
+                  },
+                  "inventory": {
+                    "type": "number"
+                  },
+                  "prepaid_expenses": {
+                    "type": "number"
+                  },
+                  "short_term_investments": {
+                    "type": "number"
+                  },
+                  "total_current_assets": {
+                    "type": "number"
+                  },
+                  "long_term_investments": {
+                    "type": "number"
+                  },
+                  "property_equipment": {
+                    "type": "number"
+                  },
+                  "less_accumulated_depreciation": {
+                    "type": "number"
+                  },
+                  "intangible_assets": {
+                    "type": "number"
+                  },
+                  "total_fixed_assets": {
+                    "type": "number"
+                  },
+                  "deferred_income_tax": {
+                    "type": "number"
+                  },
+                  "other_assets": {
+                    "type": "number"
+                  },
+                  "total_assets": {
+                    "type": "number"
+                  },
+                  "accounts_payable": {
+                    "type": "number"
+                  },
+                  "short_term_loans": {
+                    "type": "number"
+                  },
+                  "income_taxes_payable": {
+                    "type": "number"
+                  },
+                  "accrued_salaries_and_wages": {
+                    "type": "number"
+                  },
+                  "unearned_revenue": {
+                    "type": "number"
+                  },
+                  "current_portion_of_long_term_debt": {
+                    "type": "number"
+                  },
+                  "total_current_liabilities": {
+                    "type": "number"
+                  },
+                  "long_term_debt": {
+                    "type": "number"
+                  },
+                  "deferred_income_tax_liabilities": {
+                    "type": "number"
+                  },
+                  "total_long_term_liabilities": {
+                    "type": "number"
+                  },
+                  "owners_investment": {
+                    "type": "number"
+                  },
+                  "retained_earnings": {
+                    "type": "number"
+                  },
+                  "total_owners_equity": {
+                    "type": "number"
+                  },
+                  "total_liabilities_and_owners_equity": {
+                    "type": "number"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Balance sheet entry created successfully"
+          },
+          "400": {
+            "description": "Invalid input"
+          },
+          "500": {
+            "description": "Server error"
+          }
+        }
+      }
+    },
     "/api/bill-of-lading/{id}": {
       "get": {
         "summary": "Get a bill of lading record by ID",
