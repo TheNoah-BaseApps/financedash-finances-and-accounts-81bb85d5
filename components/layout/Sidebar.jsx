@@ -9,7 +9,8 @@ import {
   TrendingUp, 
   AlertTriangle,
   Lightbulb,
-  BookOpen
+  BookOpen,
+  Wallet
 } from 'lucide-react';
 
 const navItems = [
@@ -17,6 +18,7 @@ const navItems = [
   { name: 'Accounts Payable', href: '/accounts-payable', icon: FileText },
   { name: 'Accounts Receivable', href: '/accounts-receivable', icon: DollarSign },
   { name: 'Accounting Journal', href: '/accounting-journal', icon: BookOpen },
+  { name: 'Budget Management', href: '/budget-management', icon: Wallet },
   { name: 'Cash Flow Forecast', href: '/cash-flow-forecast', icon: TrendingUp },
   { name: 'Risk Summary', href: '/risk-summary', icon: AlertTriangle },
   { name: 'Insights', href: '/insights', icon: Lightbulb }

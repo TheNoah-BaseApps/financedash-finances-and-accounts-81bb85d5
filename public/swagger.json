@@ -595,6 +595,327 @@
         }
       }
     },
+    "/api/budget-management/{id}": {
+      "get": {
+        "summary": "Get a specific budget entry",
+        "description": "Retrieve a single budget entry by ID",
+        "tags": [
+          "Budget Management"
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Budget entry ID"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Budget entry retrieved successfully"
+          },
+          "404": {
+            "description": "Budget entry not found"
+          },
+          "500": {
+            "description": "Server error"
+          }
+        }
+      },
+      "put": {
+        "summary": "Update a budget entry",
+        "description": "Update an existing budget entry",
+        "tags": [
+          "Budget Management"
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Budget entry ID"
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "budget_id": {
+                    "type": "string"
+                  },
+                  "financial_year": {
+                    "type": "string"
+                  },
+                  "department": {
+                    "type": "string"
+                  },
+                  "budget_category": {
+                    "type": "string"
+                  },
+                  "sub_category": {
+                    "type": "string"
+                  },
+                  "budget_date": {
+                    "type": "string",
+                    "format": "date-time"
+                  },
+                  "budget_owner": {
+                    "type": "string"
+                  },
+                  "original_budget": {
+                    "type": "number"
+                  },
+                  "revised_budget": {
+                    "type": "number"
+                  },
+                  "actual_spend_ytd": {
+                    "type": "number"
+                  },
+                  "committed_spend": {
+                    "type": "number"
+                  },
+                  "total_utilised": {
+                    "type": "number"
+                  },
+                  "balance_available": {
+                    "type": "number"
+                  },
+                  "utilisation_percent": {
+                    "type": "number"
+                  },
+                  "budget_status": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Budget entry updated successfully"
+          },
+          "404": {
+            "description": "Budget entry not found"
+          },
+          "500": {
+            "description": "Server error"
+          }
+        }
+      },
+      "delete": {
+        "summary": "Delete a budget entry",
+        "description": "Delete a budget entry by ID",
+        "tags": [
+          "Budget Management"
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Budget entry ID"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Budget entry deleted successfully"
+          },
+          "404": {
+            "description": "Budget entry not found"
+          },
+          "500": {
+            "description": "Server error"
+          }
+        }
+      }
+    },
+    "/api/budget-management": {
+      "get": {
+        "summary": "Get all budget entries",
+        "description": "Retrieve all budget management entries with pagination and filtering",
+        "tags": [
+          "Budget Management"
+        ],
+        "parameters": [
+          {
+            "in": "query",
+            "name": "limit",
+            "schema": {
+              "type": "integer",
+              "default": 50
+            },
+            "description": "Maximum number of records to return"
+          },
+          {
+            "in": "query",
+            "name": "offset",
+            "schema": {
+              "type": "integer",
+              "default": 0
+            },
+            "description": "Number of records to skip"
+          },
+          {
+            "in": "query",
+            "name": "financial_year",
+            "schema": {
+              "type": "string"
+            },
+            "description": "Filter by financial year"
+          },
+          {
+            "in": "query",
+            "name": "department",
+            "schema": {
+              "type": "string"
+            },
+            "description": "Filter by department"
+          },
+          {
+            "in": "query",
+            "name": "budget_status",
+            "schema": {
+              "type": "string"
+            },
+            "description": "Filter by budget status"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "List of budget entries retrieved successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean"
+                    },
+                    "data": {
+                      "type": "array",
+                      "items": {
+                        "type": "object"
+                      }
+                    },
+                    "total": {
+                      "type": "integer"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Server error"
+          }
+        }
+      },
+      "post": {
+        "summary": "Create a new budget entry",
+        "description": "Create a new budget management entry",
+        "tags": [
+          "Budget Management"
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "budget_id",
+                  "financial_year",
+                  "department",
+                  "budget_category",
+                  "budget_date",
+                  "budget_owner",
+                  "original_budget",
+                  "budget_status"
+                ],
+                "properties": {
+                  "budget_id": {
+                    "type": "string"
+                  },
+                  "financial_year": {
+                    "type": "string"
+                  },
+                  "department": {
+                    "type": "string"
+                  },
+                  "budget_category": {
+                    "type": "string"
+                  },
+                  "sub_category": {
+                    "type": "string"
+                  },
+                  "budget_date": {
+                    "type": "string",
+                    "format": "date-time"
+                  },
+                  "budget_owner": {
+                    "type": "string"
+                  },
+                  "original_budget": {
+                    "type": "number"
+                  },
+                  "revised_budget": {
+                    "type": "number"
+                  },
+                  "actual_spend_ytd": {
+                    "type": "number"
+                  },
+                  "committed_spend": {
+                    "type": "number"
+                  },
+                  "total_utilised": {
+                    "type": "number"
+                  },
+                  "balance_available": {
+                    "type": "number"
+                  },
+                  "utilisation_percent": {
+                    "type": "number"
+                  },
+                  "budget_status": {
+                    "type": "string",
+                    "enum": [
+                      "Active",
+                      "On Hold",
+                      "Exceeded",
+                      "Closed"
+                    ]
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Budget entry created successfully"
+          },
+          "400": {
+            "description": "Invalid input"
+          },
+          "500": {
+            "description": "Server error"
+          }
+        }
+      }
+    },
     "/api/cash-flow-forecast/{id}": {
       "put": {
         "summary": "Update forecast",
