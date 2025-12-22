@@ -595,6 +595,105 @@
         }
       }
     },
+    "/api/balance-sheet/{id}": {
+      "get": {
+        "summary": "Get a balance sheet entry by ID",
+        "description": "Retrieve a specific balance sheet entry",
+        "tags": [
+          "Balance Sheet"
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Balance sheet entry ID"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Balance sheet entry details"
+          },
+          "404": {
+            "description": "Balance sheet entry not found"
+          },
+          "500": {
+            "description": "Server error"
+          }
+        }
+      },
+      "put": {
+        "summary": "Update a balance sheet entry",
+        "description": "Update an existing balance sheet entry",
+        "tags": [
+          "Balance Sheet"
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Balance sheet entry ID"
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Balance sheet entry updated successfully"
+          },
+          "404": {
+            "description": "Balance sheet entry not found"
+          },
+          "500": {
+            "description": "Server error"
+          }
+        }
+      },
+      "delete": {
+        "summary": "Delete a balance sheet entry",
+        "description": "Delete a specific balance sheet entry",
+        "tags": [
+          "Balance Sheet"
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Balance sheet entry ID"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Balance sheet entry deleted successfully"
+          },
+          "404": {
+            "description": "Balance sheet entry not found"
+          },
+          "500": {
+            "description": "Server error"
+          }
+        }
+      }
+    },
     "/api/balance-sheet": {
       "get": {
         "summary": "Get all balance sheet entries",
