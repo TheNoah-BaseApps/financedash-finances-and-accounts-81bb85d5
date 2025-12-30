@@ -42,6 +42,10 @@ import { query } from '@/lib/database/aurora';
  *                     type: object
  *                 total:
  *                   type: integer
+ *                 limit:
+ *                   type: integer
+ *                 offset:
+ *                   type: integer
  *       500:
  *         description: Server error
  */
@@ -135,6 +139,15 @@ export async function GET(request) {
  *     responses:
  *       201:
  *         description: Journal entry created successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                 data:
+ *                   type: object
  *       400:
  *         description: Invalid input
  *       500:

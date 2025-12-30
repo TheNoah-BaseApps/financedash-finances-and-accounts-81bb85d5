@@ -13,8 +13,20 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
-import { Loader2, ArrowLeft } from 'lucide-react';
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from '@/components/ui/alert-dialog';
+import { Loader2, ArrowLeft, Trash2 } from 'lucide-react';
 import Link from 'next/link';
+import { toast } from 'sonner';
 
 export default function EditBudgetPage() {
   const router = useRouter();
@@ -22,6 +34,8 @@ export default function EditBudgetPage() {
   const { id } = params;
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
+  const [deleting, setDeleting] = useState(false);
+  const [revisionHistory, setRevisionHistory] = useState([]);
   const [formData, setFormData] = useState({
     budget_id: '',
     financial_year: '',
@@ -34,11 +48,15 @@ export default function EditBudgetPage() {
     revised_budget: '',
     actual_spend_ytd: '',
     committed_spend: '',
-    budget_status: ''
+    budget_status: '',
+    total_utilised: '0',
+    balance_available: '0',
+    utilisation_percent: '0'
   });
 
   useEffect(() => {
     fetchBudget();
+    fetchRevisionHistory();
   }, [id]);
 
   async function fetchBudget() {
@@ -60,18 +78,34 @@ export default function EditBudgetPage() {
           revised_budget: budget.revised_budget?.toString() || '',
           actual_spend_ytd: budget.actual_spend_ytd?.toString() || '0',
           committed_spend: budget.committed_spend?.toString() || '0',
-          budget_status: budget.budget_status || 'Active'
+          budget_status: budget.budget_status || 'Active',
+          total_utilised: budget.total_utilised?.toString() || '0',
+          balance_available: budget.balance_available?.toString() || '0',
+          utilisation_percent: budget.utilisation_percent?.toString() || '0'
         });
       } else {
-        alert('Failed to fetch budget entry');
+        toast.error('Failed to fetch budget entry');
         router.push('/budget-management');
       }
     } catch (error) {
       console.error('Error fetching budget:', error);
-      alert('Error fetching budget entry');
+      toast.error('Error fetching budget entry');
       router.push('/budget-management');
     } finally {
       setLoading(false);
+    }
+  }
+
+  async function fetchRevisionHistory() {
+    try {
+      const response = await fetch(`/api/budget-management/${id}/revisions`);
+      const result = await response.json();
+
+      if (result.success) {
+        setRevisionHistory(result.data || []);
+      }
+    } catch (error) {
+      console.error('Error fetching revision history:', error);
     }
   }
 
@@ -103,30 +137,68 @@ export default function EditBudgetPage() {
     setSaving(true);
 
     try {
+      // Recalculate values before submission
+      const original = parseFloat(formData.original_budget);
+      const revised = formData.revised_budget ? parseFloat(formData.revised_budget) : original;
+      const actual = parseFloat(formData.actual_spend_ytd || 0);
+      const committed = parseFloat(formData.committed_spend || 0);
+
+      const totalUtilised = actual + committed;
+      const balance = revised - totalUtilised;
+      const utilisation = revised > 0 ? (totalUtilised / revised) * 100 : 0;
+
       const response = await fetch(`/api/budget-management/${id}`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           ...formData,
-          original_budget: parseFloat(formData.original_budget),
+          original_budget: original,
           revised_budget: formData.revised_budget ? parseFloat(formData.revised_budget) : null,
-          actual_spend_ytd: parseFloat(formData.actual_spend_ytd || 0),
-          committed_spend: parseFloat(formData.committed_spend || 0)
+          actual_spend_ytd: actual,
+          committed_spend: committed,
+          total_utilised: totalUtilised,
+          balance_available: balance,
+          utilisation_percent: parseFloat(utilisation.toFixed(2))
         })
       });
 
       const result = await response.json();
 
       if (result.success) {
+        toast.success('Budget entry updated successfully');
         router.push('/budget-management');
       } else {
-        alert('Failed to update budget: ' + result.error);
+        toast.error('Failed to update budget: ' + result.error);
       }
     } catch (error) {
       console.error('Error updating budget:', error);
-      alert('Error updating budget entry');
+      toast.error('Error updating budget entry');
     } finally {
       setSaving(false);
+    }
+  }
+
+  async function handleDelete() {
+    setDeleting(true);
+
+    try {
+      const response = await fetch(`/api/budget-management/${id}`, {
+        method: 'DELETE',
+      });
+
+      const result = await response.json();
+
+      if (result.success) {
+        toast.success('Budget entry deleted successfully');
+        router.push('/budget-management');
+      } else {
+        toast.error('Failed to delete budget: ' + result.error);
+      }
+    } catch (error) {
+      console.error('Error deleting budget:', error);
+      toast.error('Error deleting budget entry');
+    } finally {
+      setDeleting(false);
     }
   }
 
@@ -140,13 +212,47 @@ export default function EditBudgetPage() {
 
   return (
     <div className="container mx-auto p-8 max-w-4xl">
-      <div className="mb-6">
+      <div className="mb-6 flex items-center justify-between">
         <Link href="/budget-management">
           <Button variant="outline" size="sm">
             <ArrowLeft className="h-4 w-4 mr-2" />
             Back to Budget Management
           </Button>
         </Link>
+
+        <AlertDialog>
+          <AlertDialogTrigger asChild>
+            <Button variant="destructive" size="sm" disabled={deleting}>
+              <Trash2 className="h-4 w-4 mr-2" />
+              Delete Budget
+            </Button>
+          </AlertDialogTrigger>
+          <AlertDialogContent>
+            <AlertDialogHeader>
+              <AlertDialogTitle>Are you sure?</AlertDialogTitle>
+              <AlertDialogDescription>
+                This action cannot be undone. This will permanently delete the budget entry
+                and all associated data.
+              </AlertDialogDescription>
+            </AlertDialogHeader>
+            <AlertDialogFooter>
+              <AlertDialogCancel>Cancel</AlertDialogCancel>
+              <AlertDialogAction
+                onClick={handleDelete}
+                className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+              >
+                {deleting ? (
+                  <>
+                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                    Deleting...
+                  </>
+                ) : (
+                  'Delete'
+                )}
+              </AlertDialogAction>
+            </AlertDialogFooter>
+          </AlertDialogContent>
+        </AlertDialog>
       </div>
 
       <Card>
@@ -342,6 +448,48 @@ export default function EditBudgetPage() {
           </form>
         </CardContent>
       </Card>
+
+      {revisionHistory.length > 0 && (
+        <Card className="mt-6">
+          <CardHeader>
+            <CardTitle>Revision History</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="space-y-4">
+              {revisionHistory.map((revision, index) => (
+                <div key={index} className="border-b pb-4 last:border-b-0">
+                  <div className="flex justify-between items-start mb-2">
+                    <div>
+                      <p className="font-semibold text-sm">
+                        {new Date(revision.revision_date).toLocaleDateString('en-US', {
+                          year: 'numeric',
+                          month: 'long',
+                          day: 'numeric',
+                          hour: '2-digit',
+                          minute: '2-digit'
+                        })}
+                      </p>
+                      <p className="text-sm text-gray-600">
+                        Revised by: {revision.revised_by || 'System'}
+                      </p>
+                    </div>
+                    <div className="text-right">
+                      <p className="text-sm font-semibold">
+                        ${parseFloat(revision.previous_amount || 0).toLocaleString()} → ${parseFloat(revision.new_amount || 0).toLocaleString()}
+                      </p>
+                    </div>
+                  </div>
+                  {revision.revision_reason && (
+                    <p className="text-sm text-gray-700 mt-2">
+                      <span className="font-semibold">Reason:</span> {revision.revision_reason}
+                    </p>
+                  )}
+                </div>
+              ))}
+            </div>
+          </CardContent>
+        </Card>
+      )}
     </div>
   );
 }

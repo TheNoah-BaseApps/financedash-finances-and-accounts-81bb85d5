@@ -17,15 +17,80 @@ import { query } from '@/lib/database/aurora';
  *         description: Journal entry ID
  *     responses:
  *       200:
- *         description: Journal entry details
+ *         description: Journal entry details retrieved successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: true
+ *                 data:
+ *                   type: object
+ *                   properties:
+ *                     id:
+ *                       type: string
+ *                     account_code:
+ *                       type: string
+ *                     account_name:
+ *                       type: string
+ *                     trial_balance_debit:
+ *                       type: number
+ *                     trial_balance_credit:
+ *                       type: number
+ *                     adjusting_entries_debit:
+ *                       type: number
+ *                     adjusting_entries_credit:
+ *                       type: number
+ *                     adjusted_trial_balance_debit:
+ *                       type: number
+ *                     adjusted_trial_balance_credit:
+ *                       type: number
+ *                     income_statement_debit:
+ *                       type: number
+ *                     income_statement_credit:
+ *                       type: number
+ *                     balance_sheet_debit:
+ *                       type: number
+ *                     balance_sheet_credit:
+ *                       type: number
+ *                     created_at:
+ *                       type: string
+ *                       format: date-time
+ *                     updated_at:
+ *                       type: string
+ *                       format: date-time
  *       404:
  *         description: Entry not found
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: false
+ *                 error:
+ *                   type: string
+ *                   example: Entry not found
  *       500:
  *         description: Server error
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: false
+ *                 error:
+ *                   type: string
  */
 export async function GET(request, { params }) {
   try {
     const { id } = params;
+    
     const result = await query(
       'SELECT * FROM accounting_journal WHERE id = $1',
       [id]
@@ -53,7 +118,7 @@ export async function GET(request, { params }) {
  * /api/accounting-journal/{id}:
  *   put:
  *     summary: Update an accounting journal entry
- *     description: Update an existing journal entry
+ *     description: Update an existing journal entry with new values
  *     tags: [Accounting Journal]
  *     parameters:
  *       - in: path
@@ -61,6 +126,7 @@ export async function GET(request, { params }) {
  *         required: true
  *         schema:
  *           type: string
+ *         description: Journal entry ID
  *     requestBody:
  *       required: true
  *       content:
@@ -70,35 +136,88 @@ export async function GET(request, { params }) {
  *             properties:
  *               account_code:
  *                 type: string
+ *                 description: Account code identifier
  *               account_name:
  *                 type: string
+ *                 description: Name of the account
  *               trial_balance_debit:
  *                 type: number
+ *                 format: decimal
+ *                 description: Trial balance debit amount
  *               trial_balance_credit:
  *                 type: number
+ *                 format: decimal
+ *                 description: Trial balance credit amount
  *               adjusting_entries_debit:
  *                 type: number
+ *                 format: decimal
+ *                 description: Adjusting entries debit amount
  *               adjusting_entries_credit:
  *                 type: number
+ *                 format: decimal
+ *                 description: Adjusting entries credit amount
  *               adjusted_trial_balance_debit:
  *                 type: number
+ *                 format: decimal
+ *                 description: Adjusted trial balance debit amount
  *               adjusted_trial_balance_credit:
  *                 type: number
+ *                 format: decimal
+ *                 description: Adjusted trial balance credit amount
  *               income_statement_debit:
  *                 type: number
+ *                 format: decimal
+ *                 description: Income statement debit amount
  *               income_statement_credit:
  *                 type: number
+ *                 format: decimal
+ *                 description: Income statement credit amount
  *               balance_sheet_debit:
  *                 type: number
+ *                 format: decimal
+ *                 description: Balance sheet debit amount
  *               balance_sheet_credit:
  *                 type: number
+ *                 format: decimal
+ *                 description: Balance sheet credit amount
  *     responses:
  *       200:
  *         description: Entry updated successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: true
+ *                 data:
+ *                   type: object
  *       404:
  *         description: Entry not found
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: false
+ *                 error:
+ *                   type: string
+ *                   example: Entry not found
  *       500:
  *         description: Server error
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: false
+ *                 error:
+ *                   type: string
  */
 export async function PUT(request, { params }) {
   try {
@@ -124,7 +243,7 @@ export async function PUT(request, { params }) {
       RETURNING *
     `;
 
-    const params = [
+    const queryParams = [
       body.account_code,
       body.account_name,
       body.trial_balance_debit,
@@ -140,7 +259,7 @@ export async function PUT(request, { params }) {
       id
     ];
 
-    const result = await query(queryText, params);
+    const result = await query(queryText, queryParams);
 
     if (result.rows.length === 0) {
       return NextResponse.json(
@@ -164,7 +283,7 @@ export async function PUT(request, { params }) {
  * /api/accounting-journal/{id}:
  *   delete:
  *     summary: Delete an accounting journal entry
- *     description: Remove a journal entry from the system
+ *     description: Remove a journal entry from the system permanently
  *     tags: [Accounting Journal]
  *     parameters:
  *       - in: path
@@ -172,17 +291,51 @@ export async function PUT(request, { params }) {
  *         required: true
  *         schema:
  *           type: string
+ *         description: Journal entry ID to delete
  *     responses:
  *       200:
  *         description: Entry deleted successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: true
+ *                 message:
+ *                   type: string
+ *                   example: Entry deleted successfully
  *       404:
  *         description: Entry not found
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: false
+ *                 error:
+ *                   type: string
+ *                   example: Entry not found
  *       500:
  *         description: Server error
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: false
+ *                 error:
+ *                   type: string
  */
 export async function DELETE(request, { params }) {
   try {
     const { id } = params;
+    
     const result = await query(
       'DELETE FROM accounting_journal WHERE id = $1 RETURNING *',
       [id]

@@ -8,6 +8,7 @@ import { Card, CardHeader, CardTitle, CardContent, CardFooter } from '@/componen
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { ArrowLeft, Save, Loader2 } from 'lucide-react';
+import { toast } from 'sonner';
 
 export default function NewAccountingJournalPage() {
   const router = useRouter();
@@ -40,7 +41,6 @@ export default function NewAccountingJournalPage() {
     setLoading(true);
 
     try {
-      // Convert empty strings to null for numeric fields
       const payload = {
         account_code: formData.account_code,
         account_name: formData.account_name,
@@ -65,13 +65,14 @@ export default function NewAccountingJournalPage() {
       const data = await res.json();
 
       if (data.success) {
+        toast.success('Accounting journal entry created successfully');
         router.push('/accounting-journal');
       } else {
-        alert('Failed to create entry: ' + data.error);
+        toast.error('Failed to create entry: ' + (data.error || 'Unknown error'));
       }
     } catch (error) {
       console.error('Error creating entry:', error);
-      alert('Failed to create entry');
+      toast.error('Failed to create entry');
     } finally {
       setLoading(false);
     }

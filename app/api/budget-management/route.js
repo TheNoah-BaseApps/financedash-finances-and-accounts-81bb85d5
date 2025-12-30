@@ -52,6 +52,10 @@ import { query } from '@/lib/database/aurora';
  *                     type: object
  *                 total:
  *                   type: integer
+ *                 limit:
+ *                   type: integer
+ *                 offset:
+ *                   type: integer
  *       500:
  *         description: Server error
  */
@@ -138,7 +142,7 @@ export async function GET(request) {
  * /api/budget-management:
  *   post:
  *     summary: Create a new budget entry
- *     description: Create a new budget management entry
+ *     description: Create a new budget management entry with automatic calculation of total_utilised, balance_available, and utilisation_percent
  *     tags: [Budget Management]
  *     requestBody:
  *       required: true
@@ -158,41 +162,57 @@ export async function GET(request) {
  *             properties:
  *               budget_id:
  *                 type: string
+ *                 description: Unique budget identifier
  *               financial_year:
  *                 type: string
+ *                 description: Financial year (e.g., "2024-2025")
  *               department:
  *                 type: string
+ *                 description: Department name
  *               budget_category:
  *                 type: string
+ *                 description: Budget category
  *               sub_category:
  *                 type: string
+ *                 description: Budget sub-category
  *               budget_date:
  *                 type: string
  *                 format: date-time
+ *                 description: Budget allocation date
  *               budget_owner:
  *                 type: string
+ *                 description: Budget owner/responsible person
  *               original_budget:
  *                 type: number
+ *                 description: Original allocated budget amount
  *               revised_budget:
  *                 type: number
+ *                 description: Revised budget amount (defaults to original_budget if not provided)
  *               actual_spend_ytd:
  *                 type: number
+ *                 description: Actual spending year-to-date (defaults to 0)
  *               committed_spend:
  *                 type: number
- *               total_utilised:
- *                 type: number
- *               balance_available:
- *                 type: number
- *               utilisation_percent:
- *                 type: number
+ *                 description: Committed/planned spending (defaults to 0)
  *               budget_status:
  *                 type: string
  *                 enum: [Active, On Hold, Exceeded, Closed]
+ *                 description: Current budget status
  *     responses:
  *       201:
  *         description: Budget entry created successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                 data:
+ *                   type: object
+ *                   description: Created budget entry with calculated fields
  *       400:
- *         description: Invalid input
+ *         description: Invalid input or missing required fields
  *       500:
  *         description: Server error
  */
@@ -223,11 +243,17 @@ export async function POST(request) {
       revised_budget,
       actual_spend_ytd,
       committed_spend,
-      total_utilised,
-      balance_available,
-      utilisation_percent,
       budget_status
     } = body;
+
+    // Calculate fields
+    const actualSpend = parseFloat(actual_spend_ytd || 0);
+    const committedSpend = parseFloat(committed_spend || 0);
+    const revisedBudgetValue = parseFloat(revised_budget || original_budget);
+    
+    const total_utilised = actualSpend + committedSpend;
+    const balance_available = revisedBudgetValue - total_utilised;
+    const utilisation_percent = revisedBudgetValue > 0 ? (total_utilised / revisedBudgetValue) * 100 : 0;
 
     const result = await query(
       `INSERT INTO budget_management (
@@ -245,13 +271,13 @@ export async function POST(request) {
         sub_category || null,
         budget_date,
         budget_owner,
-        original_budget,
-        revised_budget || null,
-        actual_spend_ytd || 0,
-        committed_spend || 0,
-        total_utilised || 0,
-        balance_available || original_budget,
-        utilisation_percent || 0,
+        parseFloat(original_budget),
+        revisedBudgetValue,
+        actualSpend,
+        committedSpend,
+        total_utilised,
+        balance_available,
+        utilisation_percent,
         budget_status
       ]
     );

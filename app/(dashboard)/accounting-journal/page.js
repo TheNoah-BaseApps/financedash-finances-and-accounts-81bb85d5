@@ -3,8 +3,9 @@
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
-import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
+import { Card, CardHeader, CardTitle, CardContent, CardDescription } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
 import { 
   Table, 
   TableBody, 
@@ -13,14 +14,36 @@ import {
   TableHeader, 
   TableRow 
 } from '@/components/ui/table';
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from '@/components/ui/dialog';
 import { Badge } from '@/components/ui/badge';
-import { Loader2, Plus, Search, Pencil, Trash2 } from 'lucide-react';
+import { Loader2, Plus, Search, Pencil, Trash2, TrendingUp, TrendingDown, DollarSign } from 'lucide-react';
+import { toast } from 'sonner';
 
 export default function AccountingJournalPage() {
   const [entries, setEntries] = useState([]);
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState('');
   const [error, setError] = useState(null);
+  const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const [submitting, setSubmitting] = useState(false);
+  const [formData, setFormData] = useState({
+    account_code: '',
+    account_name: '',
+    trial_balance_debit: '',
+    trial_balance_credit: '',
+    adjusting_entries_debit: '',
+    adjusting_entries_credit: '',
+    adjusted_trial_balance_debit: '',
+    adjusted_trial_balance_credit: ''
+  });
 
   useEffect(() => {
     fetchEntries();
@@ -37,12 +60,60 @@ export default function AccountingJournalPage() {
         setEntries(data.data);
       } else {
         setError(data.error);
+        toast.error('Failed to load entries', {
+          description: data.error
+        });
       }
     } catch (err) {
       console.error('Error fetching entries:', err);
       setError('Failed to load accounting journal entries');
+      toast.error('Failed to load entries', {
+        description: 'An unexpected error occurred'
+      });
     } finally {
       setLoading(false);
+    }
+  }
+
+  async function handleSubmit(e) {
+    e.preventDefault();
+    setSubmitting(true);
+
+    try {
+      const res = await fetch('/api/accounting-journal', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(formData)
+      });
+
+      const data = await res.json();
+
+      if (data.success) {
+        toast.success('Entry created successfully');
+        setIsDialogOpen(false);
+        setFormData({
+          account_code: '',
+          account_name: '',
+          trial_balance_debit: '',
+          trial_balance_credit: '',
+          adjusting_entries_debit: '',
+          adjusting_entries_credit: '',
+          adjusted_trial_balance_debit: '',
+          adjusted_trial_balance_credit: ''
+        });
+        await fetchEntries();
+      } else {
+        toast.error('Failed to create entry', {
+          description: data.error
+        });
+      }
+    } catch (err) {
+      console.error('Error creating entry:', err);
+      toast.error('Failed to create entry', {
+        description: 'An unexpected error occurred'
+      });
+    } finally {
+      setSubmitting(false);
     }
   }
 
@@ -56,13 +127,18 @@ export default function AccountingJournalPage() {
       const data = await res.json();
 
       if (data.success) {
+        toast.success('Entry deleted successfully');
         await fetchEntries();
       } else {
-        alert('Failed to delete entry: ' + data.error);
+        toast.error('Failed to delete entry', {
+          description: data.error
+        });
       }
     } catch (err) {
       console.error('Error deleting entry:', err);
-      alert('Failed to delete entry');
+      toast.error('Failed to delete entry', {
+        description: 'An unexpected error occurred'
+      });
     }
   }
 
@@ -75,6 +151,27 @@ export default function AccountingJournalPage() {
     return value ? `$${parseFloat(value).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}` : '-';
   };
 
+  const calculateTotals = () => {
+    return filteredEntries.reduce((acc, entry) => {
+      acc.tbDebit += parseFloat(entry.trial_balance_debit || 0);
+      acc.tbCredit += parseFloat(entry.trial_balance_credit || 0);
+      acc.adjDebit += parseFloat(entry.adjusting_entries_debit || 0);
+      acc.adjCredit += parseFloat(entry.adjusting_entries_credit || 0);
+      acc.atbDebit += parseFloat(entry.adjusted_trial_balance_debit || 0);
+      acc.atbCredit += parseFloat(entry.adjusted_trial_balance_credit || 0);
+      return acc;
+    }, {
+      tbDebit: 0,
+      tbCredit: 0,
+      adjDebit: 0,
+      adjCredit: 0,
+      atbDebit: 0,
+      atbCredit: 0
+    });
+  };
+
+  const totals = calculateTotals();
+
   if (loading) {
     return (
       <div className="flex items-center justify-center min-h-screen">
@@ -85,19 +182,185 @@ export default function AccountingJournalPage() {
 
   return (
     <div className="container mx-auto p-8 space-y-6">
-      <div className="flex justify-between items-center">
+      <div className="flex justify-between items-start">
         <div>
           <h1 className="text-3xl font-bold tracking-tight">Accounting Journal</h1>
           <p className="text-muted-foreground mt-2">
             Manage trial balances, adjusting entries, and financial statements
           </p>
         </div>
-        <Link href="/accounting-journal/new">
-          <Button>
-            <Plus className="mr-2 h-4 w-4" />
-            New Entry
-          </Button>
-        </Link>
+        <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
+          <DialogTrigger asChild>
+            <Button>
+              <Plus className="mr-2 h-4 w-4" />
+              Add Entry
+            </Button>
+          </DialogTrigger>
+          <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
+            <DialogHeader>
+              <DialogTitle>Add Journal Entry</DialogTitle>
+              <DialogDescription>
+                Create a new accounting journal entry with trial balance and adjusting entries
+              </DialogDescription>
+            </DialogHeader>
+            <form onSubmit={handleSubmit}>
+              <div className="grid gap-4 py-4">
+                <div className="grid grid-cols-2 gap-4">
+                  <div className="space-y-2">
+                    <Label htmlFor="account_code">Account Code *</Label>
+                    <Input
+                      id="account_code"
+                      value={formData.account_code}
+                      onChange={(e) => setFormData({ ...formData, account_code: e.target.value })}
+                      required
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="account_name">Account Name *</Label>
+                    <Input
+                      id="account_name"
+                      value={formData.account_name}
+                      onChange={(e) => setFormData({ ...formData, account_name: e.target.value })}
+                      required
+                    />
+                  </div>
+                </div>
+
+                <div className="space-y-2">
+                  <h4 className="font-medium">Trial Balance</h4>
+                  <div className="grid grid-cols-2 gap-4">
+                    <div className="space-y-2">
+                      <Label htmlFor="trial_balance_debit">Debit</Label>
+                      <Input
+                        id="trial_balance_debit"
+                        type="number"
+                        step="0.01"
+                        value={formData.trial_balance_debit}
+                        onChange={(e) => setFormData({ ...formData, trial_balance_debit: e.target.value })}
+                      />
+                    </div>
+                    <div className="space-y-2">
+                      <Label htmlFor="trial_balance_credit">Credit</Label>
+                      <Input
+                        id="trial_balance_credit"
+                        type="number"
+                        step="0.01"
+                        value={formData.trial_balance_credit}
+                        onChange={(e) => setFormData({ ...formData, trial_balance_credit: e.target.value })}
+                      />
+                    </div>
+                  </div>
+                </div>
+
+                <div className="space-y-2">
+                  <h4 className="font-medium">Adjusting Entries</h4>
+                  <div className="grid grid-cols-2 gap-4">
+                    <div className="space-y-2">
+                      <Label htmlFor="adjusting_entries_debit">Debit</Label>
+                      <Input
+                        id="adjusting_entries_debit"
+                        type="number"
+                        step="0.01"
+                        value={formData.adjusting_entries_debit}
+                        onChange={(e) => setFormData({ ...formData, adjusting_entries_debit: e.target.value })}
+                      />
+                    </div>
+                    <div className="space-y-2">
+                      <Label htmlFor="adjusting_entries_credit">Credit</Label>
+                      <Input
+                        id="adjusting_entries_credit"
+                        type="number"
+                        step="0.01"
+                        value={formData.adjusting_entries_credit}
+                        onChange={(e) => setFormData({ ...formData, adjusting_entries_credit: e.target.value })}
+                      />
+                    </div>
+                  </div>
+                </div>
+
+                <div className="space-y-2">
+                  <h4 className="font-medium">Adjusted Trial Balance</h4>
+                  <div className="grid grid-cols-2 gap-4">
+                    <div className="space-y-2">
+                      <Label htmlFor="adjusted_trial_balance_debit">Debit</Label>
+                      <Input
+                        id="adjusted_trial_balance_debit"
+                        type="number"
+                        step="0.01"
+                        value={formData.adjusted_trial_balance_debit}
+                        onChange={(e) => setFormData({ ...formData, adjusted_trial_balance_debit: e.target.value })}
+                      />
+                    </div>
+                    <div className="space-y-2">
+                      <Label htmlFor="adjusted_trial_balance_credit">Credit</Label>
+                      <Input
+                        id="adjusted_trial_balance_credit"
+                        type="number"
+                        step="0.01"
+                        value={formData.adjusted_trial_balance_credit}
+                        onChange={(e) => setFormData({ ...formData, adjusted_trial_balance_credit: e.target.value })}
+                      />
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <DialogFooter>
+                <Button type="button" variant="outline" onClick={() => setIsDialogOpen(false)}>
+                  Cancel
+                </Button>
+                <Button type="submit" disabled={submitting}>
+                  {submitting ? (
+                    <>
+                      <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                      Creating...
+                    </>
+                  ) : (
+                    'Create Entry'
+                  )}
+                </Button>
+              </DialogFooter>
+            </form>
+          </DialogContent>
+        </Dialog>
+      </div>
+
+      <div className="grid gap-4 md:grid-cols-3">
+        <Card>
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+            <CardTitle className="text-sm font-medium">Total Entries</CardTitle>
+            <DollarSign className="h-4 w-4 text-muted-foreground" />
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold">{entries.length}</div>
+            <p className="text-xs text-muted-foreground">
+              Accounting journal entries
+            </p>
+          </CardContent>
+        </Card>
+        <Card>
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+            <CardTitle className="text-sm font-medium">Total Debits (ATB)</CardTitle>
+            <TrendingUp className="h-4 w-4 text-muted-foreground" />
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold">{formatCurrency(totals.atbDebit)}</div>
+            <p className="text-xs text-muted-foreground">
+              Adjusted trial balance
+            </p>
+          </CardContent>
+        </Card>
+        <Card>
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+            <CardTitle className="text-sm font-medium">Total Credits (ATB)</CardTitle>
+            <TrendingDown className="h-4 w-4 text-muted-foreground" />
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold">{formatCurrency(totals.atbCredit)}</div>
+            <p className="text-xs text-muted-foreground">
+              Adjusted trial balance
+            </p>
+          </CardContent>
+        </Card>
       </div>
 
       <Card>
@@ -127,12 +390,10 @@ export default function AccountingJournalPage() {
           ) : filteredEntries.length === 0 ? (
             <div className="text-center py-12">
               <p className="text-muted-foreground mb-4">No journal entries found</p>
-              <Link href="/accounting-journal/new">
-                <Button variant="outline">
-                  <Plus className="mr-2 h-4 w-4" />
-                  Create First Entry
-                </Button>
-              </Link>
+              <Button variant="outline" onClick={() => setIsDialogOpen(true)}>
+                <Plus className="mr-2 h-4 w-4" />
+                Create First Entry
+              </Button>
             </div>
           ) : (
             <div className="overflow-x-auto">

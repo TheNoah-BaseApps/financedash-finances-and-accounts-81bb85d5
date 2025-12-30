@@ -4,7 +4,7 @@ import { useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { FileText, TrendingUp, Receipt, Calculator, DollarSign, Users, Building, Package, ShoppingCart, Wallet } from 'lucide-react';
+import { FileText, TrendingUp, Receipt, Calculator, DollarSign, Users, Building, Package, ShoppingCart, Wallet, BookOpen } from 'lucide-react';
 
 export default function HomePage() {
   const router = useRouter();
@@ -92,6 +92,18 @@ export default function HomePage() {
       title: 'Working Capital',
       description: 'Monitor cash conversion cycle and working capital efficiency',
       link: '/working-capital'
+    },
+    {
+      icon: BookOpen,
+      title: 'Accounting Journal',
+      description: 'Manage trial balance, adjusting entries, and financial statements',
+      link: '/accounting-journal'
+    },
+    {
+      icon: Wallet,
+      title: 'Budget Management',
+      description: 'Track budget planning, utilization, and financial performance',
+      link: '/budget-management'
     }
   ];
 

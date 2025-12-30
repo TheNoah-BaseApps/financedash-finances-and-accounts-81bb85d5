@@ -15,6 +15,7 @@ import {
 } from '@/components/ui/select';
 import { Loader2, ArrowLeft } from 'lucide-react';
 import Link from 'next/link';
+import { toast } from 'sonner';
 
 export default function NewBudgetPage() {
   const router = useRouter();
@@ -31,7 +32,10 @@ export default function NewBudgetPage() {
     revised_budget: '',
     actual_spend_ytd: '0',
     committed_spend: '0',
-    budget_status: 'Active'
+    budget_status: 'Draft',
+    total_utilised: '0',
+    balance_available: '0',
+    utilisation_percent: '0.00'
   });
 
   function handleChange(field, value) {
@@ -59,6 +63,20 @@ export default function NewBudgetPage() {
 
   async function handleSubmit(e) {
     e.preventDefault();
+    
+    // Validation
+    if (!formData.budget_id || !formData.financial_year || !formData.department || 
+        !formData.budget_category || !formData.budget_date || !formData.budget_owner || 
+        !formData.original_budget || !formData.budget_status) {
+      toast.error('Please fill in all required fields');
+      return;
+    }
+
+    if (parseFloat(formData.original_budget) <= 0) {
+      toast.error('Original budget must be greater than 0');
+      return;
+    }
+
     setLoading(true);
 
     try {
@@ -70,20 +88,24 @@ export default function NewBudgetPage() {
           original_budget: parseFloat(formData.original_budget),
           revised_budget: formData.revised_budget ? parseFloat(formData.revised_budget) : null,
           actual_spend_ytd: parseFloat(formData.actual_spend_ytd || 0),
-          committed_spend: parseFloat(formData.committed_spend || 0)
+          committed_spend: parseFloat(formData.committed_spend || 0),
+          total_utilised: parseFloat(formData.total_utilised || 0),
+          balance_available: parseFloat(formData.balance_available || 0),
+          utilisation_percent: parseFloat(formData.utilisation_percent || 0)
         })
       });
 
       const result = await response.json();
 
       if (result.success) {
+        toast.success('Budget entry created successfully');
         router.push('/budget-management');
       } else {
-        alert('Failed to create budget: ' + result.error);
+        toast.error('Failed to create budget: ' + result.error);
       }
     } catch (error) {
       console.error('Error creating budget:', error);
-      alert('Error creating budget entry');
+      toast.error('Error creating budget entry');
     } finally {
       setLoading(false);
     }
@@ -253,10 +275,11 @@ export default function NewBudgetPage() {
                     <SelectValue />
                   </SelectTrigger>
                   <SelectContent>
+                    <SelectItem value="Draft">Draft</SelectItem>
+                    <SelectItem value="Approved">Approved</SelectItem>
                     <SelectItem value="Active">Active</SelectItem>
-                    <SelectItem value="On Hold">On Hold</SelectItem>
-                    <SelectItem value="Exceeded">Exceeded</SelectItem>
                     <SelectItem value="Closed">Closed</SelectItem>
+                    <SelectItem value="Overrun">Overrun</SelectItem>
                   </SelectContent>
                 </Select>
               </div>

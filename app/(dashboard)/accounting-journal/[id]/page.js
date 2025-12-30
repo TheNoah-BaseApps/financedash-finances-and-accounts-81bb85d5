@@ -7,13 +7,15 @@ import { Button } from '@/components/ui/button';
 import { Card, CardHeader, CardTitle, CardContent, CardFooter } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { ArrowLeft, Save, Loader2 } from 'lucide-react';
+import { ArrowLeft, Save, Loader2, Trash2 } from 'lucide-react';
+import { toast } from 'sonner';
 
 export default function EditAccountingJournalPage() {
   const router = useRouter();
   const params = useParams();
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
+  const [deleting, setDeleting] = useState(false);
   const [formData, setFormData] = useState({
     account_code: '',
     account_name: '',
@@ -55,12 +57,12 @@ export default function EditAccountingJournalPage() {
           balance_sheet_credit: data.data.balance_sheet_credit || ''
         });
       } else {
-        alert('Failed to load entry: ' + data.error);
+        toast.error('Failed to load entry: ' + data.error);
         router.push('/accounting-journal');
       }
     } catch (error) {
       console.error('Error fetching entry:', error);
-      alert('Failed to load entry');
+      toast.error('Failed to load entry');
       router.push('/accounting-journal');
     } finally {
       setLoading(false);
@@ -104,15 +106,44 @@ export default function EditAccountingJournalPage() {
       const data = await res.json();
 
       if (data.success) {
+        toast.success('Entry updated successfully');
         router.push('/accounting-journal');
       } else {
-        alert('Failed to update entry: ' + data.error);
+        toast.error('Failed to update entry: ' + data.error);
       }
     } catch (error) {
       console.error('Error updating entry:', error);
-      alert('Failed to update entry');
+      toast.error('Failed to update entry');
     } finally {
       setSaving(false);
+    }
+  };
+
+  const handleDelete = async () => {
+    if (!confirm('Are you sure you want to delete this entry? This action cannot be undone.')) {
+      return;
+    }
+
+    setDeleting(true);
+
+    try {
+      const res = await fetch(`/api/accounting-journal/${params.id}`, {
+        method: 'DELETE'
+      });
+
+      const data = await res.json();
+
+      if (data.success) {
+        toast.success('Entry deleted successfully');
+        router.push('/accounting-journal');
+      } else {
+        toast.error('Failed to delete entry: ' + data.error);
+      }
+    } catch (error) {
+      console.error('Error deleting entry:', error);
+      toast.error('Failed to delete entry');
+    } finally {
+      setDeleting(false);
     }
   };
 
@@ -313,23 +344,43 @@ export default function EditAccountingJournalPage() {
               </div>
             </div>
           </CardContent>
-          <CardFooter className="flex justify-end gap-4">
-            <Link href="/accounting-journal">
-              <Button type="button" variant="outline">Cancel</Button>
-            </Link>
-            <Button type="submit" disabled={saving}>
-              {saving ? (
+          <CardFooter className="flex justify-between">
+            <Button 
+              type="button" 
+              variant="destructive" 
+              onClick={handleDelete}
+              disabled={deleting}
+            >
+              {deleting ? (
                 <>
                   <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                  Saving...
+                  Deleting...
                 </>
               ) : (
                 <>
-                  <Save className="mr-2 h-4 w-4" />
-                  Save Changes
+                  <Trash2 className="mr-2 h-4 w-4" />
+                  Delete
                 </>
               )}
             </Button>
+            <div className="flex gap-4">
+              <Link href="/accounting-journal">
+                <Button type="button" variant="outline">Cancel</Button>
+              </Link>
+              <Button type="submit" disabled={saving}>
+                {saving ? (
+                  <>
+                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                    Saving...
+                  </>
+                ) : (
+                  <>
+                    <Save className="mr-2 h-4 w-4" />
+                    Save Changes
+                  </>
+                )}
+              </Button>
+            </div>
           </CardFooter>
         </form>
       </Card>

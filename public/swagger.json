@@ -50,19 +50,117 @@
         ],
         "responses": {
           "200": {
-            "description": "Journal entry details"
+            "description": "Journal entry details retrieved successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean",
+                      "example": true
+                    },
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "id": {
+                          "type": "string"
+                        },
+                        "account_code": {
+                          "type": "string"
+                        },
+                        "account_name": {
+                          "type": "string"
+                        },
+                        "trial_balance_debit": {
+                          "type": "number"
+                        },
+                        "trial_balance_credit": {
+                          "type": "number"
+                        },
+                        "adjusting_entries_debit": {
+                          "type": "number"
+                        },
+                        "adjusting_entries_credit": {
+                          "type": "number"
+                        },
+                        "adjusted_trial_balance_debit": {
+                          "type": "number"
+                        },
+                        "adjusted_trial_balance_credit": {
+                          "type": "number"
+                        },
+                        "income_statement_debit": {
+                          "type": "number"
+                        },
+                        "income_statement_credit": {
+                          "type": "number"
+                        },
+                        "balance_sheet_debit": {
+                          "type": "number"
+                        },
+                        "balance_sheet_credit": {
+                          "type": "number"
+                        },
+                        "created_at": {
+                          "type": "string",
+                          "format": "date-time"
+                        },
+                        "updated_at": {
+                          "type": "string",
+                          "format": "date-time"
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
           },
           "404": {
-            "description": "Entry not found"
+            "description": "Entry not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean",
+                      "example": false
+                    },
+                    "error": {
+                      "type": "string",
+                      "example": "Entry not found"
+                    }
+                  }
+                }
+              }
+            }
           },
           "500": {
-            "description": "Server error"
+            "description": "Server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean",
+                      "example": false
+                    },
+                    "error": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
           }
         }
       },
       "put": {
         "summary": "Update an accounting journal entry",
-        "description": "Update an existing journal entry",
+        "description": "Update an existing journal entry with new values",
         "tags": [
           "Accounting Journal"
         ],
@@ -73,7 +171,8 @@
             "required": true,
             "schema": {
               "type": "string"
-            }
+            },
+            "description": "Journal entry ID"
           }
         ],
         "requestBody": {
@@ -84,40 +183,62 @@
                 "type": "object",
                 "properties": {
                   "account_code": {
-                    "type": "string"
+                    "type": "string",
+                    "description": "Account code identifier"
                   },
                   "account_name": {
-                    "type": "string"
+                    "type": "string",
+                    "description": "Name of the account"
                   },
                   "trial_balance_debit": {
-                    "type": "number"
+                    "type": "number",
+                    "format": "decimal",
+                    "description": "Trial balance debit amount"
                   },
                   "trial_balance_credit": {
-                    "type": "number"
+                    "type": "number",
+                    "format": "decimal",
+                    "description": "Trial balance credit amount"
                   },
                   "adjusting_entries_debit": {
-                    "type": "number"
+                    "type": "number",
+                    "format": "decimal",
+                    "description": "Adjusting entries debit amount"
                   },
                   "adjusting_entries_credit": {
-                    "type": "number"
+                    "type": "number",
+                    "format": "decimal",
+                    "description": "Adjusting entries credit amount"
                   },
                   "adjusted_trial_balance_debit": {
-                    "type": "number"
+                    "type": "number",
+                    "format": "decimal",
+                    "description": "Adjusted trial balance debit amount"
                   },
                   "adjusted_trial_balance_credit": {
-                    "type": "number"
+                    "type": "number",
+                    "format": "decimal",
+                    "description": "Adjusted trial balance credit amount"
                   },
                   "income_statement_debit": {
-                    "type": "number"
+                    "type": "number",
+                    "format": "decimal",
+                    "description": "Income statement debit amount"
                   },
                   "income_statement_credit": {
-                    "type": "number"
+                    "type": "number",
+                    "format": "decimal",
+                    "description": "Income statement credit amount"
                   },
                   "balance_sheet_debit": {
-                    "type": "number"
+                    "type": "number",
+                    "format": "decimal",
+                    "description": "Balance sheet debit amount"
                   },
                   "balance_sheet_credit": {
-                    "type": "number"
+                    "type": "number",
+                    "format": "decimal",
+                    "description": "Balance sheet credit amount"
                   }
                 }
               }
@@ -126,19 +247,68 @@
         },
         "responses": {
           "200": {
-            "description": "Entry updated successfully"
+            "description": "Entry updated successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean",
+                      "example": true
+                    },
+                    "data": {
+                      "type": "object"
+                    }
+                  }
+                }
+              }
+            }
           },
           "404": {
-            "description": "Entry not found"
+            "description": "Entry not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean",
+                      "example": false
+                    },
+                    "error": {
+                      "type": "string",
+                      "example": "Entry not found"
+                    }
+                  }
+                }
+              }
+            }
           },
           "500": {
-            "description": "Server error"
+            "description": "Server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean",
+                      "example": false
+                    },
+                    "error": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
           }
         }
       },
       "delete": {
         "summary": "Delete an accounting journal entry",
-        "description": "Remove a journal entry from the system",
+        "description": "Remove a journal entry from the system permanently",
         "tags": [
           "Accounting Journal"
         ],
@@ -149,18 +319,69 @@
             "required": true,
             "schema": {
               "type": "string"
-            }
+            },
+            "description": "Journal entry ID to delete"
           }
         ],
         "responses": {
           "200": {
-            "description": "Entry deleted successfully"
+            "description": "Entry deleted successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean",
+                      "example": true
+                    },
+                    "message": {
+                      "type": "string",
+                      "example": "Entry deleted successfully"
+                    }
+                  }
+                }
+              }
+            }
           },
           "404": {
-            "description": "Entry not found"
+            "description": "Entry not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean",
+                      "example": false
+                    },
+                    "error": {
+                      "type": "string",
+                      "example": "Entry not found"
+                    }
+                  }
+                }
+              }
+            }
           },
           "500": {
-            "description": "Server error"
+            "description": "Server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean",
+                      "example": false
+                    },
+                    "error": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
           }
         }
       }
@@ -218,6 +439,12 @@
                       }
                     },
                     "total": {
+                      "type": "integer"
+                    },
+                    "limit": {
+                      "type": "integer"
+                    },
+                    "offset": {
                       "type": "integer"
                     }
                   }
@@ -290,7 +517,22 @@
         },
         "responses": {
           "201": {
-            "description": "Journal entry created successfully"
+            "description": "Journal entry created successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean"
+                    },
+                    "data": {
+                      "type": "object"
+                    }
+                  }
+                }
+              }
+            }
           },
           "400": {
             "description": "Invalid input"
@@ -1337,7 +1579,7 @@
     "/api/budget-management/{id}": {
       "get": {
         "summary": "Get a specific budget entry",
-        "description": "Retrieve a single budget entry by ID",
+        "description": "Retrieve a single budget entry by ID with all budget details",
         "tags": [
           "Budget Management"
         ],
@@ -1354,19 +1596,123 @@
         ],
         "responses": {
           "200": {
-            "description": "Budget entry retrieved successfully"
+            "description": "Budget entry retrieved successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean"
+                    },
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "id": {
+                          "type": "string"
+                        },
+                        "budget_id": {
+                          "type": "string"
+                        },
+                        "financial_year": {
+                          "type": "string"
+                        },
+                        "department": {
+                          "type": "string"
+                        },
+                        "budget_category": {
+                          "type": "string"
+                        },
+                        "sub_category": {
+                          "type": "string"
+                        },
+                        "budget_date": {
+                          "type": "string",
+                          "format": "date-time"
+                        },
+                        "budget_owner": {
+                          "type": "string"
+                        },
+                        "original_budget": {
+                          "type": "number"
+                        },
+                        "revised_budget": {
+                          "type": "number"
+                        },
+                        "actual_spend_ytd": {
+                          "type": "number"
+                        },
+                        "committed_spend": {
+                          "type": "number"
+                        },
+                        "total_utilised": {
+                          "type": "number"
+                        },
+                        "balance_available": {
+                          "type": "number"
+                        },
+                        "utilisation_percent": {
+                          "type": "number"
+                        },
+                        "budget_status": {
+                          "type": "string"
+                        },
+                        "created_at": {
+                          "type": "string",
+                          "format": "date-time"
+                        },
+                        "updated_at": {
+                          "type": "string",
+                          "format": "date-time"
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
           },
           "404": {
-            "description": "Budget entry not found"
+            "description": "Budget entry not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean"
+                    },
+                    "error": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
           },
           "500": {
-            "description": "Server error"
+            "description": "Server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean"
+                    },
+                    "error": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
           }
         }
       },
       "put": {
         "summary": "Update a budget entry",
-        "description": "Update an existing budget entry",
+        "description": "Update an existing budget entry with automatic recalculation of total_utilised, balance_available, and utilisation_percent",
         "tags": [
           "Budget Management"
         ],
@@ -1389,50 +1735,53 @@
                 "type": "object",
                 "properties": {
                   "budget_id": {
-                    "type": "string"
+                    "type": "string",
+                    "description": "Unique budget identifier"
                   },
                   "financial_year": {
-                    "type": "string"
+                    "type": "string",
+                    "description": "Financial year (e.g., 2024-2025)"
                   },
                   "department": {
-                    "type": "string"
+                    "type": "string",
+                    "description": "Department name"
                   },
                   "budget_category": {
-                    "type": "string"
+                    "type": "string",
+                    "description": "Budget category"
                   },
                   "sub_category": {
-                    "type": "string"
+                    "type": "string",
+                    "description": "Budget sub-category"
                   },
                   "budget_date": {
                     "type": "string",
-                    "format": "date-time"
+                    "format": "date-time",
+                    "description": "Budget date"
                   },
                   "budget_owner": {
-                    "type": "string"
+                    "type": "string",
+                    "description": "Budget owner name"
                   },
                   "original_budget": {
-                    "type": "number"
+                    "type": "number",
+                    "description": "Original allocated budget"
                   },
                   "revised_budget": {
-                    "type": "number"
+                    "type": "number",
+                    "description": "Revised budget amount"
                   },
                   "actual_spend_ytd": {
-                    "type": "number"
+                    "type": "number",
+                    "description": "Actual spend year-to-date"
                   },
                   "committed_spend": {
-                    "type": "number"
-                  },
-                  "total_utilised": {
-                    "type": "number"
-                  },
-                  "balance_available": {
-                    "type": "number"
-                  },
-                  "utilisation_percent": {
-                    "type": "number"
+                    "type": "number",
+                    "description": "Committed spend amount"
                   },
                   "budget_status": {
-                    "type": "string"
+                    "type": "string",
+                    "description": "Budget status (Active, Exhausted, etc.)"
                   }
                 }
               }
@@ -1441,19 +1790,137 @@
         },
         "responses": {
           "200": {
-            "description": "Budget entry updated successfully"
+            "description": "Budget entry updated successfully with recalculated values",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean"
+                    },
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "id": {
+                          "type": "string"
+                        },
+                        "budget_id": {
+                          "type": "string"
+                        },
+                        "financial_year": {
+                          "type": "string"
+                        },
+                        "department": {
+                          "type": "string"
+                        },
+                        "budget_category": {
+                          "type": "string"
+                        },
+                        "sub_category": {
+                          "type": "string"
+                        },
+                        "budget_date": {
+                          "type": "string",
+                          "format": "date-time"
+                        },
+                        "budget_owner": {
+                          "type": "string"
+                        },
+                        "original_budget": {
+                          "type": "number"
+                        },
+                        "revised_budget": {
+                          "type": "number"
+                        },
+                        "actual_spend_ytd": {
+                          "type": "number"
+                        },
+                        "committed_spend": {
+                          "type": "number"
+                        },
+                        "total_utilised": {
+                          "type": "number"
+                        },
+                        "balance_available": {
+                          "type": "number"
+                        },
+                        "utilisation_percent": {
+                          "type": "number"
+                        },
+                        "budget_status": {
+                          "type": "string"
+                        },
+                        "updated_at": {
+                          "type": "string",
+                          "format": "date-time"
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request - missing required fields",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean"
+                    },
+                    "error": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
           },
           "404": {
-            "description": "Budget entry not found"
+            "description": "Budget entry not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean"
+                    },
+                    "error": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
           },
           "500": {
-            "description": "Server error"
+            "description": "Server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean"
+                    },
+                    "error": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
           }
         }
       },
       "delete": {
         "summary": "Delete a budget entry",
-        "description": "Delete a budget entry by ID",
+        "description": "Permanently delete a budget entry by ID from the database",
         "tags": [
           "Budget Management"
         ],
@@ -1470,13 +1937,80 @@
         ],
         "responses": {
           "200": {
-            "description": "Budget entry deleted successfully"
+            "description": "Budget entry deleted successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean"
+                    },
+                    "message": {
+                      "type": "string"
+                    },
+                    "data": {
+                      "type": "object",
+                      "description": "Deleted budget entry data"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request - missing ID",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean"
+                    },
+                    "error": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
           },
           "404": {
-            "description": "Budget entry not found"
+            "description": "Budget entry not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean"
+                    },
+                    "error": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
           },
           "500": {
-            "description": "Server error"
+            "description": "Server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean"
+                    },
+                    "error": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
           }
         }
       }
@@ -1551,6 +2085,12 @@
                     },
                     "total": {
                       "type": "integer"
+                    },
+                    "limit": {
+                      "type": "integer"
+                    },
+                    "offset": {
+                      "type": "integer"
                     }
                   }
                 }
@@ -1564,7 +2104,7 @@
       },
       "post": {
         "summary": "Create a new budget entry",
-        "description": "Create a new budget management entry",
+        "description": "Create a new budget management entry with automatic calculation of total_utilised, balance_available, and utilisation_percent",
         "tags": [
           "Budget Management"
         ],
@@ -1586,47 +2126,49 @@
                 ],
                 "properties": {
                   "budget_id": {
-                    "type": "string"
+                    "type": "string",
+                    "description": "Unique budget identifier"
                   },
                   "financial_year": {
-                    "type": "string"
+                    "type": "string",
+                    "description": "Financial year (e.g., \"2024-2025\")"
                   },
                   "department": {
-                    "type": "string"
+                    "type": "string",
+                    "description": "Department name"
                   },
                   "budget_category": {
-                    "type": "string"
+                    "type": "string",
+                    "description": "Budget category"
                   },
                   "sub_category": {
-                    "type": "string"
+                    "type": "string",
+                    "description": "Budget sub-category"
                   },
                   "budget_date": {
                     "type": "string",
-                    "format": "date-time"
+                    "format": "date-time",
+                    "description": "Budget allocation date"
                   },
                   "budget_owner": {
-                    "type": "string"
+                    "type": "string",
+                    "description": "Budget owner/responsible person"
                   },
                   "original_budget": {
-                    "type": "number"
+                    "type": "number",
+                    "description": "Original allocated budget amount"
                   },
                   "revised_budget": {
-                    "type": "number"
+                    "type": "number",
+                    "description": "Revised budget amount (defaults to original_budget if not provided)"
                   },
                   "actual_spend_ytd": {
-                    "type": "number"
+                    "type": "number",
+                    "description": "Actual spending year-to-date (defaults to 0)"
                   },
                   "committed_spend": {
-                    "type": "number"
-                  },
-                  "total_utilised": {
-                    "type": "number"
-                  },
-                  "balance_available": {
-                    "type": "number"
-                  },
-                  "utilisation_percent": {
-                    "type": "number"
+                    "type": "number",
+                    "description": "Committed/planned spending (defaults to 0)"
                   },
                   "budget_status": {
                     "type": "string",
@@ -1635,7 +2177,8 @@
                       "On Hold",
                       "Exceeded",
                       "Closed"
-                    ]
+                    ],
+                    "description": "Current budget status"
                   }
                 }
               }
@@ -1644,10 +2187,26 @@
         },
         "responses": {
           "201": {
-            "description": "Budget entry created successfully"
+            "description": "Budget entry created successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean"
+                    },
+                    "data": {
+                      "type": "object",
+                      "description": "Created budget entry with calculated fields"
+                    }
+                  }
+                }
+              }
+            }
           },
           "400": {
-            "description": "Invalid input"
+            "description": "Invalid input or missing required fields"
           },
           "500": {
             "description": "Server error"
